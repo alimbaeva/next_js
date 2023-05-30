@@ -16,7 +16,7 @@ export async function getStaticProps() {
 
 // const inter = Inter({ subsets: ['latin'] })
 
-type Prop = {
+export type Prop = {
     id: string;
     date: string;
     title: string;
