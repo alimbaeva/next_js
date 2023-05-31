@@ -1,6 +1,8 @@
 import Layout from '../../components/layout';
 import { getAllPostIds, getPostData } from '../../../lib/posts';
-import { Prop } from '..';
+import Head from 'next/head';
+import Date from '../../components/date';
+import utilStyles from '../../styles/utils.module.css';
 
 export async function getStaticPaths() {
   const paths = getAllPostIds();
@@ -11,22 +13,29 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: {params: {title: string; id: string; date: string}}) {
-    const postData = getPostData(params.id);
+    // Add the "await" keyword like this:
+    const postData = await getPostData(params.id);
+
     return {
-      props: {
+        props: {
         postData,
-      },
+        },
     };
   }
 
-  export default function Post({ postData }: {postData: {title: string; id: string; date: string}}) {
+  export default function Post({ postData }: {postData: {title: string; id: string; date: string; contentHtml: HTMLElement}}) {
     return (
-      <Layout home>
-        {postData.title}
-        <br />
-        {postData.id}
-        <br />
-        {postData.date}
+        <Layout home>
+             <Head>
+                <title>{postData.title}</title>
+            </Head>
+            <article>
+                <h1 className={utilStyles.headingXl}>{postData.title}</h1>
+                <div className={utilStyles.lightText}>
+                <Date dateString={postData.date} />
+                </div>
+                <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+            </article>
       </Layout>
     );
   }
